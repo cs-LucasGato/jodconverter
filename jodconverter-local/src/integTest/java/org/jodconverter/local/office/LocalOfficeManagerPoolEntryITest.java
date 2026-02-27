@@ -86,6 +86,7 @@ class LocalOfficeManagerPoolEntryITest {
                   DEFAULT_EXISTING_PROCESS_ACTION,
                   DEFAULT_START_FAIL_FAST,
                   DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+                  RestartStrategy.automatic(),
                   new OfficeConnection(CONNECT_URL)));
       try {
         poolEntry.start();
@@ -121,6 +122,7 @@ class LocalOfficeManagerPoolEntryITest {
               DEFAULT_EXISTING_PROCESS_ACTION,
               DEFAULT_START_FAIL_FAST,
               DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+              RestartStrategy.automatic(),
               connection);
       final LocalOfficeManagerPoolEntry poolEntry =
           new LocalOfficeManagerPoolEntry(
@@ -192,6 +194,7 @@ class LocalOfficeManagerPoolEntryITest {
                   DEFAULT_EXISTING_PROCESS_ACTION,
                   DEFAULT_START_FAIL_FAST,
                   DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+                  RestartStrategy.automatic(),
                   new OfficeConnection(CONNECT_URL)));
       try {
         poolEntry.start();
@@ -242,6 +245,7 @@ class LocalOfficeManagerPoolEntryITest {
                   DEFAULT_EXISTING_PROCESS_ACTION,
                   DEFAULT_START_FAIL_FAST,
                   DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+                  RestartStrategy.automatic(),
                   new OfficeConnection(CONNECT_URL)));
       try {
         poolEntry.start();

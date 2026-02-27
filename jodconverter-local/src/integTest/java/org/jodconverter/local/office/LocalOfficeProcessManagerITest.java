@@ -78,6 +78,7 @@ class LocalOfficeProcessManagerITest {
               ExistingProcessAction.KILL,
               true,
               DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+              RestartStrategy.automatic(),
               new OfficeConnection(CONNECT_URL));
       try {
         manager.start();
@@ -112,6 +113,7 @@ class LocalOfficeProcessManagerITest {
               ExistingProcessAction.FAIL,
               true,
               DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+              RestartStrategy.automatic(),
               new OfficeConnection(CONNECT_URL));
       try {
 
@@ -150,6 +152,7 @@ class LocalOfficeProcessManagerITest {
               ExistingProcessAction.CONNECT,
               true,
               DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+              RestartStrategy.automatic(),
               new OfficeConnection(CONNECT_URL));
       try {
 
@@ -186,6 +189,7 @@ class LocalOfficeProcessManagerITest {
               ExistingProcessAction.CONNECT_OR_KILL,
               true,
               DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+              RestartStrategy.automatic(),
               new OfficeConnection(CONNECT_URL));
       try {
         manager.start();
@@ -245,6 +249,7 @@ class LocalOfficeProcessManagerITest {
               ExistingProcessAction.CONNECT_OR_KILL,
               true,
               DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+              RestartStrategy.automatic(),
               connection);
       managerRef.set(manager);
       try {
@@ -282,6 +287,7 @@ class LocalOfficeProcessManagerITest {
               DEFAULT_EXISTING_PROCESS_ACTION,
               true,
               DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+              RestartStrategy.automatic(),
               connection);
       try {
         manager.start();
@@ -322,6 +328,7 @@ class LocalOfficeProcessManagerITest {
               ExistingProcessAction.KILL,
               true,
               true,
+              RestartStrategy.automatic(),
               connection);
       try {
         manager.start();
@@ -344,6 +351,7 @@ class LocalOfficeProcessManagerITest {
                 ExistingProcessAction.FAIL,
                 true,
                 DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+                RestartStrategy.automatic(),
                 connection);
 
         // Find a way to assert that an exception is thrown (check the log).
@@ -366,6 +374,7 @@ class LocalOfficeProcessManagerITest {
                 ExistingProcessAction.CONNECT_OR_KILL,
                 true,
                 DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+                RestartStrategy.automatic(),
                 connection);
 
       } finally {
@@ -396,6 +405,7 @@ class LocalOfficeProcessManagerITest {
             DEFAULT_EXISTING_PROCESS_ACTION,
             DEFAULT_START_FAIL_FAST,
             DEFAULT_KEEP_ALIVE_ON_SHUTDOWN,
+            RestartStrategy.automatic(),
             connection);
     processManager.start();
     final long limit = start + START_WAIT_TIMEOUT;
