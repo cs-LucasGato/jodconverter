@@ -185,7 +185,7 @@ public abstract class AbstractOfficeManagerPool<E extends AbstractOfficeManagerP
 
     if (manager == null) {
       throw new OfficeException(
-          String.format("No office manager availablef ater %d millisec", taskQueueTimeout));
+          String.format("No office manager available after %d millisec", taskQueueTimeout));
     }
     LOGGER.debug("Office manager acquired successfully from the pool.");
     return manager;
@@ -281,22 +281,25 @@ public abstract class AbstractOfficeManagerPool<E extends AbstractOfficeManagerP
    * @return The number of idle processes that were requested to restart.
    */
   @Override
-  public synchronized int restartIdleProcesses() {
-    int restartedCount = 0;
+  public int restartIdleProcesses() {
 
-    if (poolState.get() != POOL_STARTED) {
+    synchronized (this) {
+      int restartedCount = 0;
+
+      if (poolState.get() != POOL_STARTED) {
+        return restartedCount;
+      }
+
+      for (final E entry : entries) {
+        if (entry.isIdle()) {
+          entry.requestRestart();
+          restartedCount++;
+        }
+      }
+
+      LOGGER.info("Requested restart for {} idle process(es)", restartedCount);
       return restartedCount;
     }
-
-    for (final E entry : entries) {
-      if (entry.isIdle()) {
-        entry.requestRestart();
-        restartedCount++;
-      }
-    }
-
-    LOGGER.info("Requested restart for {} idle process(es)", restartedCount);
-    return restartedCount;
   }
 
   /**
@@ -305,18 +308,21 @@ public abstract class AbstractOfficeManagerPool<E extends AbstractOfficeManagerP
    * @return The count of idle processes.
    */
   @Override
-  public synchronized int getIdleCount() {
-    if (poolState.get() != POOL_STARTED) {
-      return 0;
-    }
+  public int getIdleCount() {
 
-    int idleCount = 0;
-    for (final E entry : entries) {
-      if (entry.isIdle()) {
-        idleCount++;
+    synchronized (this) {
+      if (poolState.get() != POOL_STARTED) {
+        return 0;
       }
+
+      int idleCount = 0;
+      for (final E entry : entries) {
+        if (entry.isIdle()) {
+          idleCount++;
+        }
+      }
+      return idleCount;
     }
-    return idleCount;
   }
 
   /**
@@ -325,18 +331,21 @@ public abstract class AbstractOfficeManagerPool<E extends AbstractOfficeManagerP
    * @return The count of busy processes.
    */
   @Override
-  public synchronized int getBusyCount() {
-    if (poolState.get() != POOL_STARTED) {
-      return 0;
-    }
+  public int getBusyCount() {
 
-    int busyCount = 0;
-    for (final E entry : entries) {
-      if (!entry.isIdle()) {
-        busyCount++;
+    synchronized (this) {
+      if (poolState.get() != POOL_STARTED) {
+        return 0;
       }
+
+      int busyCount = 0;
+      for (final E entry : entries) {
+        if (!entry.isIdle()) {
+          busyCount++;
+        }
+      }
+      return busyCount;
     }
-    return busyCount;
   }
 
   /**

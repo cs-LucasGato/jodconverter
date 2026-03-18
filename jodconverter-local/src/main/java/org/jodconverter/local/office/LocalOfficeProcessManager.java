@@ -289,8 +289,8 @@ class LocalOfficeProcessManager {
    * Restarts the office process when there is a timeout while executing a task.
    *
    * <p>The function will forcibly kill the office process via the configured {@link
-   * RestartStrategy}. With automatic restart strategy, this happens immediately. With manual restart
-   * strategy, the kill action is queued and must be triggered externally.
+   * RestartStrategy}. With automatic restart strategy, this happens immediately. With manual
+   * restart strategy, the kill action is queued and must be triggered externally.
    *
    * @see LocalOfficeManagerPoolEntry
    */

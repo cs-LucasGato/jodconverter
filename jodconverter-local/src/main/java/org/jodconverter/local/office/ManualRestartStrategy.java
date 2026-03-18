@@ -23,7 +23,6 @@ package org.jodconverter.local.office;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executor;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -42,11 +41,15 @@ public final class ManualRestartStrategy implements RestartStrategy {
   private final List<PendingRestart> pendingRestarts = new CopyOnWriteArrayList<>();
   private final List<RestartEventListener> listeners = new CopyOnWriteArrayList<>();
 
+  /**
+   * A class ot encapsulate pending restart requests, including the reason for the restart and the
+   * action to execute when the restart is triggered.
+   */
   private static class PendingRestart {
     private final RestartReason reason;
     private final Runnable restartAction;
 
-    PendingRestart(final RestartReason reason, final Runnable restartAction) {
+    /* default */ PendingRestart(final RestartReason reason, final Runnable restartAction) {
       this.reason = reason;
       this.restartAction = restartAction;
     }
@@ -78,14 +81,14 @@ public final class ManualRestartStrategy implements RestartStrategy {
       final @Nullable AvailabilityCallback availabilityCallback) {
 
     LOGGER.info("Manual restart requested for reason: {}", reason);
-    
+
     // Immediately mark the pool entry as unavailable if callback is provided
     // This prevents new tasks from being submitted while waiting for manual restart
     if (availabilityCallback != null) {
       LOGGER.debug("Marking pool entry as unavailable due to pending restart");
       availabilityCallback.markUnavailable();
     }
-    
+
     final PendingRestart pending = new PendingRestart(reason, restartAction);
     pendingRestarts.add(pending);
 
@@ -159,18 +162,13 @@ public final class ManualRestartStrategy implements RestartStrategy {
    *
    * @return The number of restarts executed.
    */
-  public int executeAllPendingRestarts(@Nullable final Executor executor) {
+  public int executeAllPendingRestarts() {
     int count = 0;
 
     while (!pendingRestarts.isEmpty()) {
       final PendingRestart pending = pendingRestarts.remove(0);
 
-      if (executor != null) {
-        executor.execute(() -> executeRestart(pending));
-      } else {
-        executeRestart(pending);
-      }
-
+      executeRestart(pending);
 
       count++;
     }
@@ -195,13 +193,13 @@ public final class ManualRestartStrategy implements RestartStrategy {
     try {
       pending.restartAction.run();
       success = true;
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       LOGGER.error("Error executing restart action", ex);
     } finally {
       for (final RestartEventListener listener : listeners) {
         try {
           listener.onRestartExecuted(pending.reason, success);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
           LOGGER.error("Error notifying restart listener", ex);
         }
       }

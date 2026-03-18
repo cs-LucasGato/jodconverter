@@ -20,9 +20,7 @@
 
 package org.jodconverter.local.office;
 
-/**
- * Enumeration of reasons why an office process restart may be required.
- */
+/** Enumeration of reasons why an office process restart may be required. */
 public enum RestartReason {
 
   /** The maximum number of tasks per process has been reached. */

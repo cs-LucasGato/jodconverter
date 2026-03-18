@@ -79,12 +79,15 @@ public class SuspendableThreadPoolExecutor extends ThreadPoolExecutor {
    *
    * @return {@code true} if the executor is available, {@code false} otherwise.
    */
-  public synchronized boolean isAvailable() {
-    suspendLock.lock();
-    try {
-      return available;
-    } finally {
-      suspendLock.unlock();
+  public boolean isAvailable() {
+
+    synchronized (this) {
+      suspendLock.lock();
+      try {
+        return available;
+      } finally {
+        suspendLock.unlock();
+      }
     }
   }
 }
